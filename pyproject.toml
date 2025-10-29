@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "raceid-importer"
+version = "0.1.0"
+description = ""
+authors = ["Sebastian Ullrich <sebastian.ullrich@deepsource.de>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+garminconnect = "^0.2.30"
+termcolor = "^3.2.0"
+rich = "^14.2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
