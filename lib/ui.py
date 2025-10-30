@@ -46,9 +46,3 @@ class Ui:
     def refresh(self):
         self.console.clear()
         self.console.print(self.table)
-
-    def _format_duration(self, td):
-        total_seconds = int(td.total_seconds())
-        hours, remainder = divmod(total_seconds, 3600)
-        minutes, seconds = divmod(remainder, 60)
-        return f"{hours:02}:{minutes:02}:{seconds:02}"

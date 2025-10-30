@@ -11,6 +11,7 @@ garminconnect = "^0.2.30"
 termcolor = "^3.2.0"
 rich = "^14.2.0"
 textual = "^6.4.0"
+pyperclip = "^1.11.0"
 
 
 [build-system]
