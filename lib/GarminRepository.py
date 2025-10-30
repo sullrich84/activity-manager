@@ -1,15 +1,15 @@
 from lib.models import ActivityItem
-from lib.auth import auth_garmin
+from lib.GarminClientWrapper import GarminClientWrapper
 
 
-class GarminClient:
-    client = auth_garmin()
+class GarminRepository:
+    CLIENT = GarminClientWrapper().auth_garmin()
 
     def get_activities(
         self, start_date: str, end_date: str | None = None
     ) -> list[ActivityItem]:
         items = list()
-        activities = self.client.get_activities_by_date(start_date, end_date)
+        activities = self.CLIENT.get_activities_by_date(start_date, end_date)
 
         for act in activities:
             id = str(act.get("activityId"))
@@ -17,7 +17,7 @@ class GarminClient:
             atype = str(act.get("activityType"))
             privacy = str(act.get("privacy", dict()).get("typeKey"))
             start_time = str(act.get("startTimeLocal"))
-            distance = int(act.get("distance", 1))
+            distance = int(act.get("distance", 0))
             duration = int(act.get("duration", 0))
 
             item = ActivityItem(
