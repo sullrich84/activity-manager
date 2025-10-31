@@ -76,8 +76,9 @@ class MainWindow(App):
         self.call_from_thread(self._show_loading_indicator, True)
         try:
             table = self.query_one(ActivityTable)
+            activities = self.REPOSITORY.get_activities(self.start_date)
             table.clear()
-            for act in self.REPOSITORY.get_activities(self.start_date):
+            for act in activities:
                 table.add_row(
                     act.start_time,
                     act.id,
