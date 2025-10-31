@@ -10,9 +10,9 @@ class ActivityFilter(HorizontalGroup):
         ActivityFilter {
             height: auto;
             align: left middle;
-            background: $panel;
-            border-top: heavy $surface;
-            border-bottom: heavy $surface;
+            background: $panel-darken-1;
+            border-top: heavy $surface-lighten-3;
+            border-bottom: heavy $surface-lighten-3;
         }
 
         Label {
@@ -28,6 +28,7 @@ class ActivityFilter(HorizontalGroup):
     DATE_FORMAT = "%Y-%m-%d"
 
     def compose(self) -> ComposeResult:
+        self.border_title = " 󰈳 [italic]Filter[/italic] "
         today = date.today()
         start_value = today.replace(day=1).strftime(self.DATE_FORMAT)
         end_value = today.strftime(self.DATE_FORMAT)
