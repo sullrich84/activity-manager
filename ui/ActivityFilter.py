@@ -40,7 +40,6 @@ class ActivityFilter(HorizontalGroup):
             id="end_date",
             name="end_date",
             placeholder=end_value,
-            value=end_value,
             compact=True,
             max_length=10,
         )

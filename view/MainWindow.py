@@ -53,27 +53,25 @@ class MainWindow(App):
     @on(DateInput.Changed, "#start_date")
     def update_start_date(self, event: DateInput.Changed):
         if event.validation_result and event.validation_result.is_valid:
-            self.notify(f"Start Date: {event.value}")
+            self.start_date = event.value
+            self.update_activities()
 
     @on(DateInput.Changed, "#end_date")
     def update_end_date(self, event: DateInput.Changed):
         if event.validation_result and event.validation_result.is_valid:
-            self.notify(f"End Date: {event.value}")
-
-    def on_ready(self) -> None:
-        self._show_loading_indicator(True)
-        self.update_activities("2025-10-01")
+            self.end_date = event.value
+            self.update_activities()
 
     def _show_loading_indicator(self, display: bool):
         self.query_one(LoadingIndicator).display = display
 
     @work(exclusive=True, thread=True)
-    async def update_activities(self, start_date: str, end_date: str | None = None):
+    async def update_activities(self):
         self.call_from_thread(self._show_loading_indicator, True)
         try:
             table = self.query_one(ActivityTable)
             table.clear()
-            for act in self.REPOSITORY.get_activities(start_date, end_date):
+            for act in self.REPOSITORY.get_activities(self.start_date):
                 table.add_row(
                     act.start_time,
                     act.id,
