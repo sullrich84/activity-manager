@@ -34,6 +34,9 @@ class DateInput(Input):
             event.prevent_default()
 
     def action_update_value(self, value: int):
+        if self.value == "":
+            return
+
         current_value = datetime.strptime(self.value, "%Y-%m-%d")
         if self.cursor_position <= 4:
             delta = relativedelta(years=value)
