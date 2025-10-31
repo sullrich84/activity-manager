@@ -1,6 +1,6 @@
 from textual import on, work
 from textual.app import App, ComposeResult
-from textual.containers import Vertical
+from textual.containers import Center, Middle
 from textual.widgets import Footer, Header, LoadingIndicator
 from lib.GarminRepository import GarminRepository
 from ui.ActivityFilter import ActivityFilter
@@ -25,15 +25,27 @@ class MainWindow(App):
         Footer {
             dock: bottom;
         }
+
+        LoadingIndicator {
+            width: 20;
+            height: 5;
+            layer: 10;
+            align: center middle;
+        }
+
+        Center {
+            layer: 10;
+            margin: 0 40;
+        }
     """
 
     REPOSITORY = GarminRepository()
 
     def compose(self) -> ComposeResult:
         yield Header()
-        yield Vertical(
+        yield Middle(
             ActivityFilter(),
-            LoadingIndicator(),
+            Center(LoadingIndicator()),
             ActivityTable(),
         )
         yield Footer()
