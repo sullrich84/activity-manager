@@ -1,9 +1,9 @@
-from textual.widgets import Label
+from textual.widgets import Label as TextualLabel
 
 
-class UiLabel(Label):
+class Label(TextualLabel):
     DEFAULT_CSS = """
-        UiLabel {
+        Label {
             margin-left: 1;
             margin-right: 1;
         }

@@ -1,12 +1,12 @@
 from os import get_terminal_size
 from textual.app import ComposeResult
-from textual.widgets import DataTable, LoadingIndicator, Static
+from textual.widgets import DataTable
 from lib.GarminRepository import GarminRepository
 
 
-class UiActivityTable(DataTable):
+class ActivityTable(DataTable):
     DEFAULT_CSS = """
-        UiActivityTable {
+        ActivityTable {
             width: 100%;
             height: 100%;
         }

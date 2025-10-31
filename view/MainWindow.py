@@ -1,16 +1,17 @@
-from logging import disable
+from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import Vertical
-from textual.widgets import Footer, Header, LoadingIndicator
+from textual.widgets import Footer, Header
 from lib.GarminRepository import GarminRepository
-from ui.UiActivityFilter import UiActivityFilter
-from ui.UiActivityTable import UiActivityTable
+from ui.ActivityFilter import ActivityFilter
+from ui.ActivityTable import ActivityTable
+from ui.DateInput import DateInput
 
 
-class UiMainWindow(App):
+class MainWindow(App):
     CSS = """
         Screen { layout: vertical; }
-        UiActivityFilter { dock: top; }
+        ActivityFilter { dock: top; }
 
         Header {
             height: auto;
@@ -31,16 +32,26 @@ class UiMainWindow(App):
     def compose(self) -> ComposeResult:
         yield Header()
         yield Vertical(
-            UiActivityFilter(),
-            UiActivityTable(),
+            ActivityFilter(),
+            ActivityTable(),
         )
         yield Footer()
+
+    @on(DateInput.Changed, "#start_date")
+    def update_start_date(self, event: DateInput.Changed):
+        if event.validation_result and event.validation_result.is_valid:
+            self.notify(f"Start Date: {event.value}")
+
+    @on(DateInput.Changed, "#end_date")
+    def update_end_date(self, event: DateInput.Changed):
+        if event.validation_result and event.validation_result.is_valid:
+            self.notify(f"End Date: {event.value}")
 
     async def on_ready(self) -> None:
         await self.load_activities()
 
     async def load_activities(self):
-        table = self.query_one(UiActivityTable)
+        table = self.query_one(ActivityTable)
         for act in self.REPOSITORY.get_activities("2025-10-01"):
             table.add_row(
                 act.start_time,

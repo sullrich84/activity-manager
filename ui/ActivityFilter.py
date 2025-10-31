@@ -1,14 +1,13 @@
 from datetime import date
-from json.encoder import encode_basestring
 from textual.app import ComposeResult
 from textual.containers import HorizontalGroup
-from ui.UiDateInput import UiDateInput
-from ui.UiLabel import UiLabel
+from ui.DateInput import DateInput
+from ui.Label import Label
 
 
-class UiActivityFilter(HorizontalGroup):
+class ActivityFilter(HorizontalGroup):
     DEFAULT_CSS = """
-        UiActivityFilter {
+        ActivityFilter {
             height: auto;
             align: left middle;
         }
@@ -26,8 +25,8 @@ class UiActivityFilter(HorizontalGroup):
         start_value = today.replace(day=1).strftime(self.DATE_FORMAT)
         end_value = today.strftime(self.DATE_FORMAT)
 
-        yield UiLabel("󱙭  Start Date")
-        yield UiDateInput(
+        yield Label("󱙭  Start Date")
+        yield DateInput(
             id="start_date",
             name="start_date",
             placeholder=start_value,
@@ -36,8 +35,8 @@ class UiActivityFilter(HorizontalGroup):
             max_length=10,
         )
 
-        yield UiLabel("󱙬  End Date")
-        yield UiDateInput(
+        yield Label("󱙬  End Date")
+        yield DateInput(
             id="end_date",
             name="end_date",
             placeholder=end_value,
