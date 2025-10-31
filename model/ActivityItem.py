@@ -1,6 +1,10 @@
 from dataclasses import dataclass
 from datetime import timedelta
 
+ICONS = {
+    "RUN": "󰜎 ",
+}
+
 
 @dataclass
 class ActivityItem:
@@ -25,8 +29,12 @@ class ActivityItem:
         return self.name if self.is_public else f"[red]{self.name}[/red]"
 
     @property
-    def formatted_visibility(self) -> str:
+    def visibility_icon(self) -> str:
         return "[green] [/green]" if self.is_public else f"[red] [/red]"
+
+    @property
+    def activity_icon(self) -> str:
+        return "󰜎 "
 
     @property
     def formatted_distance(self) -> str:

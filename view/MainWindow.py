@@ -61,15 +61,18 @@ class MainWindow(App):
     @debounce(wait=0.3)
     @on(DateInput.Changed, "#start_date")
     def update_start_date(self, event: DateInput.Changed):
-        self.notify(f"start date {event.value} {event.validation_result}")
-        self.start_date = event.value
-        self.update_activities()
+        if event.validation_result and not event.validation_result.is_valid:
+            return
+        if event.value:
+            self.start_date = event.value
+            self.update_activities()
 
     @debounce(wait=0.3)
     @on(DateInput.Changed, "#end_date")
     def update_end_date(self, event: DateInput.Changed):
-        self.notify(event.value)
-        if event.validation_result and event.validation_result.is_valid:
+        if event.validation_result and not event.validation_result.is_valid:
+            return
+        if event.value:
             self.end_date = event.value
             self.update_activities()
 
@@ -86,8 +89,8 @@ class MainWindow(App):
             for act in activities:
                 table.add_row(
                     act.start_time,
-                    act.id,
-                    act.formatted_visibility,
+                    act.atype,
+                    act.visibility_icon,
                     act.formatted_name,
                     act.formatted_distance,
                     act.formatted_duration,

@@ -14,7 +14,7 @@ class GarminRepository:
         for act in activities:
             id = str(act.get("activityId"))
             name = str(act.get("activityName"))
-            atype = str(act.get("activityType"))
+            atype = str(act.get("activityType", dict()).get("typeKey"))
             privacy = str(act.get("privacy", dict()).get("typeKey"))
             start_time = str(act.get("startTimeLocal"))
             distance = int(act.get("distance", 0))
