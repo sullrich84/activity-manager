@@ -1,4 +1,4 @@
-from textual import events, on, work
+from textual import on, work
 from textual.app import App, ComposeResult
 from textual.containers import Center, Middle
 from textual.widgets import Footer, Header, LoadingIndicator
@@ -28,16 +28,16 @@ class MainWindow(App):
         }
 
         LoadingIndicator {
-            width: 20;
+            width: 100%;
             height: 5;
             layer: 10;
-            align: center middle;
+            background: $panel;
         }
 
         Center {
             layer: 10;
-            margin: 0 40;
             display: none;
+            margin: 0 40;
         }
 
         # This doesn't work when set in ActivityFilter
@@ -77,7 +77,8 @@ class MainWindow(App):
             self.update_activities()
 
     def _show_loading_indicator(self, display: bool):
-        self.query_one("#loading_indicator").display = display
+        indicator = self.query_one("#loading_indicator")
+        indicator.display = display
 
     @work(exclusive=True, thread=True)
     async def update_activities(self):
