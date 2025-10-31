@@ -89,9 +89,9 @@ class MainWindow(App):
             for act in activities:
                 table.add_row(
                     act.start_time,
-                    act.atype,
+                    act.id,
                     act.visibility_icon,
-                    act.formatted_name,
+                    act.name,
                     act.formatted_distance,
                     act.formatted_duration,
                 )

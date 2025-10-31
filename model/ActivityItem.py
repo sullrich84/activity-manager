@@ -2,7 +2,40 @@ from dataclasses import dataclass
 from datetime import timedelta
 
 ICONS = {
-    "RUN": "󰜎 ",
+    "running": "󰜎 ",
+    "virtual_run": "󰜎 ",
+    "trail_running": "󰜎 ",
+    "treadmill_running": "󰜎 ",
+    #
+    "hiking": "󰖃 ",
+    "walking": "󰖃 ",
+    #
+    "yoga": "󱅼 ",
+    #
+    "cycling": "󰂣 ",
+    "road_biking": "󰂣 ",
+    "virtual_ride": "󰂣 ",
+    "indoor_cycling": "󰂣 ",
+    "mountain_biking": "󰂣 ",
+    #
+    "hiit": "󱅝 ",
+    "strength_training": "󱅝 ",
+    #
+    "lap_swimming": "󰓣 ",
+    "open_water_swimming": "󰓣 ",
+    #
+    "multi_sport": " ",
+    #
+    "meditation": "󱅻 ",
+    #
+    "kayaking_v2": "󰢯 ",
+    "stand_up_paddel": "󰢯 ",
+    #
+    "stop_watch": " ",
+    #
+    "other": " ",
+    #
+    "floor_climb": "󰓍 ",
 }
 
 
@@ -25,16 +58,15 @@ class ActivityItem:
         return self.privacy == "public"
 
     @property
-    def formatted_name(self) -> str:
-        return self.name if self.is_public else f"[red]{self.name}[/red]"
-
-    @property
     def visibility_icon(self) -> str:
         return "[green] [/green]" if self.is_public else f"[red] [/red]"
 
     @property
     def activity_icon(self) -> str:
-        return "󰜎 "
+        if self.atype in ICONS:
+            return ICONS[self.atype]
+        else:
+            return self.atype
 
     @property
     def formatted_distance(self) -> str:
