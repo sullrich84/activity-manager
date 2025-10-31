@@ -1,7 +1,9 @@
+from webbrowser import open
 from os import get_terminal_size
 from textual.app import ComposeResult
 from textual.widgets import DataTable
 from lib.GarminRepository import GarminRepository
+from model.ActivityItem import ActivityItem
 
 
 class ActivityTable(DataTable):
@@ -25,9 +27,13 @@ class ActivityTable(DataTable):
     BINDINGS = [
         ("g", "scroll_top", "top"),
         ("G", "scroll_bottom", "bottom"),
+        ("o", "open_in_web", "open in web"),
     ]
 
     REPOSITORY = GarminRepository()
+
+    activity_cache = {}
+    selected_row_key = None
 
     def compose(self) -> ComposeResult:
         for name, width in self.COLS.items():
@@ -42,6 +48,26 @@ class ActivityTable(DataTable):
     def on_resize(self) -> None:
         self.columns["Name"].width = self.get_name_column_width()
         self.refresh()
+
+    def set_data(self, activities: list[ActivityItem]) -> None:
+        self.activity_cache.clear()
+        self.clear()
+        for activity in activities:
+            self.activity_cache[activity.id] = activity
+            self.add_row(
+                activity.start_time,
+                activity.id,
+                activity.visibility_icon,
+                activity.name,
+                activity.formatted_distance,
+                activity.formatted_duration,
+                key=activity.id,
+            )
+        self.refresh()
+
+    def action_open_in_web(self):
+        activity_id = self.coordinate_to_cell_key(self.cursor_coordinate).row_key.value
+        open(self.activity_cache[activity_id].url)
 
     def get_name_column_width(self):
         taken_size = sum(w for w in self.COLS.values() if w != None)

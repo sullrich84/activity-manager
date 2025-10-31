@@ -37,7 +37,7 @@ class MainWindow(App):
         Center {
             layer: 10;
             display: none;
-            margin: 0 40;
+            margin: 0 60;
         }
 
         # This doesn't work when set in ActivityFilter
@@ -50,6 +50,7 @@ class MainWindow(App):
     REPOSITORY = GarminRepository()
 
     def compose(self) -> ComposeResult:
+        self.title = "Garmin Connect Manager"
         yield Header()
         yield Middle(
             ActivityFilter(),
@@ -84,18 +85,8 @@ class MainWindow(App):
     async def update_activities(self):
         self.call_from_thread(self._show_loading_indicator, True)
         try:
-            table = self.query_one(ActivityTable)
             activities = self.REPOSITORY.get_activities(self.start_date)
-            table.clear()
-            for act in activities:
-                table.add_row(
-                    act.start_time,
-                    act.id,
-                    act.visibility_icon,
-                    act.name,
-                    act.formatted_distance,
-                    act.formatted_duration,
-                )
+            self.query_one(ActivityTable).set_data(activities)
         except Exception as e:
             self.app.notify(f"Error fetching activities: {e}", severity="error")
         finally:
