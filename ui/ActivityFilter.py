@@ -1,8 +1,8 @@
 from datetime import date
 from textual.app import ComposeResult
 from textual.containers import HorizontalGroup
+from textual.widgets import Label
 from ui.DateInput import DateInput
-from ui.Label import Label
 
 
 class ActivityFilter(HorizontalGroup):
@@ -10,6 +10,13 @@ class ActivityFilter(HorizontalGroup):
         ActivityFilter {
             height: auto;
             align: left middle;
+            background: $panel;
+            border-top: heavy $surface;
+            border-bottom: heavy $surface;
+        }
+
+        Label {
+            padding: 0 1;
         }
     """
 
@@ -40,6 +47,7 @@ class ActivityFilter(HorizontalGroup):
             id="end_date",
             name="end_date",
             placeholder=end_value,
+            valid_empty=True,
             compact=True,
             max_length=10,
         )

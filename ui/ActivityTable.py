@@ -9,7 +9,7 @@ class ActivityTable(DataTable):
         ActivityTable {
             width: 100%;
             height: 100%;
-            overflow: hidden;
+            scrollbar-visibility: hidden;
         }
     """
 
@@ -21,6 +21,11 @@ class ActivityTable(DataTable):
         "Distance": 8,
         "Duration": 8,
     }
+
+    BINDINGS = [
+        ("g", "scroll_top", "top"),
+        ("G", "scroll_bottom", "bottom"),
+    ]
 
     REPOSITORY = GarminRepository()
 

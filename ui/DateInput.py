@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from textual import events
 from textual.validation import ValidationResult, Validator
 from textual.widgets import Input
 
@@ -15,12 +14,6 @@ class DateValidator(Validator):
 
 
 class DateInput(Input):
-    DEFAULT_CSS = """
-        DateInput {
-            width: 12;
-        }
-    """
-
     def __init__(self, *args, **kwargs):
         super().__init__(
             *args,

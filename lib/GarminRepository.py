@@ -1,4 +1,4 @@
-from lib.models import ActivityItem
+from model.ActivityItem import ActivityItem
 from lib.GarminClientWrapper import GarminClientWrapper
 
 

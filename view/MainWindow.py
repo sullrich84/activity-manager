@@ -37,6 +37,12 @@ class MainWindow(App):
             layer: 10;
             margin: 0 40;
         }
+
+        # This doesn't work when set in ActivityFilter
+        DateInput {
+            width: 14;
+            padding: 0 1 0 2;
+        }
     """
 
     REPOSITORY = GarminRepository()
