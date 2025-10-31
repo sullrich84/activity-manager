@@ -6,6 +6,7 @@ from lib.GarminRepository import GarminRepository
 from ui.ActivityFilter import ActivityFilter
 from ui.ActivityTable import ActivityTable
 from ui.DateInput import DateInput
+from debouncer import DebounceOptions, debounce
 
 
 class MainWindow(App):
@@ -56,12 +57,14 @@ class MainWindow(App):
         )
         yield Footer()
 
+    @debounce(wait=0.3)
     @on(DateInput.Changed, "#start_date")
     def update_start_date(self, event: DateInput.Changed):
         if event.validation_result and event.validation_result.is_valid:
             self.start_date = event.value
             self.update_activities()
 
+    @debounce(wait=0.3)
     @on(DateInput.Changed, "#end_date")
     def update_end_date(self, event: DateInput.Changed):
         if event.validation_result and event.validation_result.is_valid:

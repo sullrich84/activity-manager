@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from textual.app import ComposeResult
 from textual.validation import ValidationResult, Validator
