@@ -41,6 +41,7 @@ class ActivityFilter(HorizontalGroup):
             value=start_value,
             compact=True,
             max_length=10,
+            valid_empty=False,
         )
 
         yield Label("󱙬  End Date")
@@ -48,9 +49,9 @@ class ActivityFilter(HorizontalGroup):
             id="end_date",
             name="end_date",
             placeholder=end_value,
-            valid_empty=True,
             compact=True,
             max_length=10,
+            valid_empty=True,
         )
 
         return super().compose()

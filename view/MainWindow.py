@@ -1,4 +1,4 @@
-from textual import on, work
+from textual import events, on, work
 from textual.app import App, ComposeResult
 from textual.containers import Center, Middle
 from textual.widgets import Footer, Header, LoadingIndicator
@@ -6,7 +6,7 @@ from lib.GarminRepository import GarminRepository
 from ui.ActivityFilter import ActivityFilter
 from ui.ActivityTable import ActivityTable
 from ui.DateInput import DateInput
-from debouncer import DebounceOptions, debounce
+from debouncer import debounce
 
 
 class MainWindow(App):
@@ -37,6 +37,7 @@ class MainWindow(App):
         Center {
             layer: 10;
             margin: 0 40;
+            display: none;
         }
 
         # This doesn't work when set in ActivityFilter
@@ -52,7 +53,7 @@ class MainWindow(App):
         yield Header()
         yield Middle(
             ActivityFilter(),
-            Center(LoadingIndicator()),
+            Center(LoadingIndicator(), id="loading_indicator"),
             ActivityTable(),
         )
         yield Footer()
@@ -60,19 +61,20 @@ class MainWindow(App):
     @debounce(wait=0.3)
     @on(DateInput.Changed, "#start_date")
     def update_start_date(self, event: DateInput.Changed):
-        if event.validation_result and event.validation_result.is_valid:
-            self.start_date = event.value
-            self.update_activities()
+        self.notify(f"start date {event.value} {event.validation_result}")
+        self.start_date = event.value
+        self.update_activities()
 
     @debounce(wait=0.3)
     @on(DateInput.Changed, "#end_date")
     def update_end_date(self, event: DateInput.Changed):
+        self.notify(event.value)
         if event.validation_result and event.validation_result.is_valid:
             self.end_date = event.value
             self.update_activities()
 
     def _show_loading_indicator(self, display: bool):
-        self.query_one(LoadingIndicator).display = display
+        self.query_one("#loading_indicator").display = display
 
     @work(exclusive=True, thread=True)
     async def update_activities(self):
