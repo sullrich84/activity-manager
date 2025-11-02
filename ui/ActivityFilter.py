@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 from textual.app import ComposeResult
 from textual.containers import HorizontalGroup
 from textual.widgets import Label
@@ -29,29 +29,27 @@ class ActivityFilter(HorizontalGroup):
 
     def compose(self) -> ComposeResult:
         self.border_title = " 󰈳 [italic]Filter[/italic] "
-        today = date.today()
-        start_value = today.replace(day=1).strftime(self.DATE_FORMAT)
-        end_value = today.strftime(self.DATE_FORMAT)
+        placeholder = date.today().strftime(self.DATE_FORMAT)
+        start_date = (date.today() - timedelta(weeks=12)).strftime(self.DATE_FORMAT)
 
         yield Label("󱙭  Start Date")
         yield DateInput(
             id="start_date",
             name="start_date",
-            placeholder=start_value,
-            value=start_value,
+            placeholder=placeholder,
+            value=start_date,
             compact=True,
             max_length=10,
-            valid_empty=False,
         )
 
         yield Label("󱙬  End Date")
         yield DateInput(
             id="end_date",
             name="end_date",
-            placeholder=end_value,
+            placeholder=placeholder,
+            valid_empty=True,
             compact=True,
             max_length=10,
-            valid_empty=True,
         )
 
         return super().compose()
