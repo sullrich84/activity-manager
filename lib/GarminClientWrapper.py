@@ -16,7 +16,6 @@ class GarminClientWrapper:
         except (FileNotFoundError, GarminConnectConnectionError):
             username = get_1password_secret("op://Personal/Garmin/username")
             password = get_1password_secret("op://Personal/Garmin/password")
-
             client = Garmin(username, password)
             client.login()
             client.garth.dump(self.TOKEN_STORE)
