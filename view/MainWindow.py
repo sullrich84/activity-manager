@@ -11,8 +11,13 @@ from debouncer import debounce
 
 class MainWindow(App):
     CSS = """
-        Screen { layout: vertical; }
-        ActivityFilter { dock: top; }
+        Screen { 
+            layout: vertical; 
+        }
+        
+        ActivityFilter { 
+            dock: top; 
+        }
 
         Header {
             height: auto;

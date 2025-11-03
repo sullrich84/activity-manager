@@ -13,7 +13,7 @@ class Result:
     result_id: str | None = None
 
 
-class RaceID:
+class RaceIdClient:
     BASE_API_URL = "https://api.raceid.com/api/v1/web"
     bearer_token: Optional[str] = None
 
@@ -63,27 +63,18 @@ class RaceID:
         if with_auth:
             headers["x-authorization"] = f"Bearer {self.bearer_token}"
 
-        try:
-            match (method):
-                case "GET":
-                    response = requests.get(url, headers=headers, params=params)
-                case "POST":
-                    response = requests.post(url, headers=headers, json=json)
+        match (method):
+            case "GET":
+                response = requests.get(url, headers=headers, params=params)
+            case "POST":
+                response = requests.post(url, headers=headers, json=json)
 
-            # print(f"method: {method}")
-            # print(f"respone: {response.status_code}")
-            # print(f"data: {response.json()}")
-
-            response.raise_for_status()
-            return response.json()
-
-        except requests.RequestException as ex:
-            print(ex)
-            return None
+        response.raise_for_status()
+        return response.json()
 
 
 if __name__ == "__main__":
-    client = RaceID()
+    client = RaceIdClient()
     client.auth("sebastian.ullrich@deepsource.de", "hqg.ufg@vnd8EUZ2jxt")
 
     result = Result(

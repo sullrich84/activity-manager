@@ -3,6 +3,7 @@ from os import get_terminal_size
 from textual.app import ComposeResult
 from textual.widgets import DataTable
 from lib.GarminRepository import GarminRepository
+from lib.RaceIdRepository import RaceIdReposiotry
 from model.ActivityItem import ActivityItem
 
 
@@ -28,9 +29,11 @@ class ActivityTable(DataTable):
         ("g", "scroll_top", "top"),
         ("G", "scroll_bottom", "bottom"),
         ("o", "open_in_web", "open in web"),
+        ("s", "sync_with_raceid", "sync with RaceID"),
     ]
 
-    REPOSITORY = GarminRepository()
+    GARMIN_REPOSITORY = GarminRepository()
+    RACEID_REPOSITORY = RaceIdReposiotry()
 
     activity_cache = {}
     selected_row_key = None
@@ -68,6 +71,13 @@ class ActivityTable(DataTable):
     def action_open_in_web(self):
         activity_id = self.coordinate_to_cell_key(self.cursor_coordinate).row_key.value
         open(self.activity_cache[activity_id].url)
+
+    def action_sync_with_raceid(self):
+        activity_id = self.coordinate_to_cell_key(self.cursor_coordinate).row_key.value
+        res = self.RACEID_REPOSITORY.set_result(
+            "995659", self.activity_cache[activity_id]
+        )
+        self.notify(f"Activity synced with RaceID:\n{res}")
 
     def get_name_column_width(self):
         taken_size = sum(w for w in self.COLS.values() if w != None)
