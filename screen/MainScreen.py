@@ -9,7 +9,7 @@ from ui.DateInput import DateInput
 from debouncer import debounce
 
 
-class MainWindow(App):
+class MainScreen(App):
     CSS = """
         Screen { 
             layout: vertical; 

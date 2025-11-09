@@ -1,4 +1,5 @@
-from view.MainWindow import MainWindow
+from screen.MainScreen import MainScreen
+
 
 if __name__ == "__main__":
-    MainWindow().run()
+    MainScreen().run()
