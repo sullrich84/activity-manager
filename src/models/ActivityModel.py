@@ -1,46 +1,36 @@
 from dataclasses import dataclass
 from datetime import timedelta
 
+
 ICONS = {
     "running": "󰜎 ",
     "virtual_run": "󰜎 ",
     "trail_running": "󰜎 ",
     "treadmill_running": "󰜎 ",
-    #
     "hiking": "󰖃 ",
     "walking": "󰖃 ",
-    #
     "yoga": "󱅼 ",
-    #
     "cycling": "󰂣 ",
     "road_biking": "󰂣 ",
     "virtual_ride": "󰂣 ",
     "indoor_cycling": "󰂣 ",
     "mountain_biking": "󰂣 ",
-    #
     "hiit": "󱅝 ",
     "strength_training": "󱅝 ",
-    #
     "lap_swimming": "󰓣 ",
     "open_water_swimming": "󰓣 ",
-    #
     "multi_sport": " ",
-    #
     "meditation": "󱅻 ",
-    #
     "kayaking_v2": "󰢯 ",
     "stand_up_paddel": "󰢯 ",
-    #
     "stop_watch": " ",
-    #
     "other": " ",
-    #
     "floor_climb": "󰓍 ",
 }
 
 
 @dataclass
-class ActivityItem:
+class ActivityModel:
     id: str
     name: str
     atype: str

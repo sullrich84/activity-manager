@@ -1,4 +1,4 @@
-from model.ActivityItem import ActivityItem
+from src.models import ActivityModel
 from lib.GarminClientWrapper import GarminClientWrapper
 
 
@@ -7,7 +7,7 @@ class GarminRepository:
 
     def get_activities(
         self, start_date: str, end_date: str | None = None
-    ) -> list[ActivityItem]:
+    ) -> list[ActivityModel]:
         items = list()
         activities = self.CLIENT.get_activities_by_date(start_date, end_date)
 
@@ -20,7 +20,7 @@ class GarminRepository:
             distance = int(act.get("distance", 0))
             duration = int(act.get("duration", 0))
 
-            item = ActivityItem(
+            item = ActivityModel(
                 id=id,
                 name=name,
                 atype=atype,

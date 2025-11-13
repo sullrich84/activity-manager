@@ -1,5 +1,6 @@
 from textual import on, work
-from textual.app import App, ComposeResult
+from textual.app import ComposeResult
+from textual.screen import Screen
 from textual.containers import Center, Middle
 from textual.widgets import Footer, Header, LoadingIndicator
 from lib.GarminRepository import GarminRepository
@@ -9,10 +10,10 @@ from ui.DateInput import DateInput
 from debouncer import debounce
 
 
-class MainScreen(App):
+class MainScreen(Screen):
     CSS = """
         Screen { 
-            layout: vertical; 
+            layout: vertical;
         }
         
         ActivityFilter { 
@@ -45,7 +46,6 @@ class MainScreen(App):
             margin: 0 60;
         }
 
-        # This doesn't work when set in ActivityFilter
         DateInput {
             width: 14;
             padding: 0 1 0 2;
@@ -67,18 +67,14 @@ class MainScreen(App):
     @debounce(wait=0.3)
     @on(DateInput.Changed, "#start_date")
     def update_start_date(self, event: DateInput.Changed):
-        if event.validation_result and not event.validation_result.is_valid:
-            return
-        if event.value:
+        if event.validation_result and event.validation_result.is_valid and event.value:
             self.start_date = event.value
             self.update_activities()
 
     @debounce(wait=0.3)
     @on(DateInput.Changed, "#end_date")
     def update_end_date(self, event: DateInput.Changed):
-        if event.validation_result and not event.validation_result.is_valid:
-            return
-        if event.value:
+        if event.validation_result and event.validation_result.is_valid and event.value:
             self.end_date = event.value
             self.update_activities()
 
