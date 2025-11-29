@@ -46,7 +46,7 @@ class ConfigLoader:
         Returns all configure RaceID series.
         """
         try:
-            return self._config["raceid"]["series"]
+            return list(self._config["raceid"]["series"].values())
         except KeyError:
             print(f"No RaceID series configured")
             print("Please add it to your config file under raceid.series")

@@ -23,15 +23,19 @@ class RaceIdClient:
 
     config = ConfigLoader()
     bearer_token: Optional[str] = None
+    cache = {}
 
     def __init__(self):
         self.load_token()
-        if not self.bearer_token:
-            self.auth()
 
-        # TODO: Handle token expired
+        if not self.bearer_token:
+            self.auth()  # TODO: handle token expire
+
         for racer_id in self.config.get_raceid_series():
-            print(racer_id)
+            self.cache[racer_id] = self.get_results(racer_id)
+
+        print(self.cache)
+        exit(1)
 
     def auth(self):
         credentials = self.config.get_credentials("raceid")
@@ -96,6 +100,7 @@ class RaceIdClient:
     ) -> Any:
         url = f"{self.BASE_API_URL}{endpoint}"
         headers = {"accept": "application/json", "content-type": "application/json"}
+
         if with_auth:
             headers["x-authorization"] = f"Bearer {self.bearer_token}"
 
