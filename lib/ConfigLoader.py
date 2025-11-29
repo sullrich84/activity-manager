@@ -40,3 +40,14 @@ class ConfigLoader:
         except KeyError as err:
             print(f"Missing required field in config for service '{service}': {err}")
             sys.exit(1)
+
+    def get_raceid_series_id(self, year_month: str) -> str:
+        """
+        Returns the RaceID series ID for a given year-month.
+        """
+        try:
+            return self._config["raceid"]["series"][year_month]
+        except KeyError:
+            print(f"No RaceID series configured for month '{year_month}'")
+            print("Please add it to your config file under raceid.series")
+            sys.exit(1)

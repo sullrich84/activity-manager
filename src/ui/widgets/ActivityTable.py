@@ -65,8 +65,11 @@ class ActivityTable(DataTable):
         activity_id = self.coordinate_to_cell_key(self.cursor_coordinate).row_key.value
         activity = self.activity_cache[activity_id]
         if activity:
-            self.REPOSITORY.set_result("995655", activity)
-            self.notify(f"Synced {activity.id}")
+            try:
+                self.REPOSITORY.set_result(activity)
+                self.notify(f"Synced `{activity.name}` with RaceID")
+            except:
+                self.notify(f"Failed to sync `{activity.name}` with RaceID")
 
     # --- Utility Methods ---
 
