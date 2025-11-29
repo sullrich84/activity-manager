@@ -1,4 +1,4 @@
-from lib.Utils import get_1password_secret
+from lib.ConfigLoader import ConfigLoader
 from garminconnect import (
     Garmin,
     GarminConnectAuthenticationError,
@@ -7,16 +7,15 @@ from garminconnect import (
 
 
 class GarminClientWrapper:
-    TOKEN_STORE = "~/.garminconnect"
+    CONFIG = ConfigLoader()
+    TOKEN_STORE = "~/.acm/.gcm"
 
     def auth_garmin(self) -> Garmin:
         try:
             client = Garmin()
             client.garth.load(self.TOKEN_STORE)
         except (FileNotFoundError, GarminConnectConnectionError):
-            username = get_1password_secret("op://Personal/Garmin/username")
-            password = get_1password_secret("op://Personal/Garmin/password")
-            client = Garmin(username, password)
+            client = Garmin(self.CONFIG.username, self.CONFIG.password)
             client.login()
             client.garth.dump(self.TOKEN_STORE)
         except GarminConnectAuthenticationError:
