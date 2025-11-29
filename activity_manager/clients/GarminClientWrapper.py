@@ -1,4 +1,4 @@
-from lib.ConfigLoader import ConfigLoader
+from activity_manager.config.ConfigLoader import ConfigLoader
 from garminconnect import (
     Garmin,
     GarminConnectAuthenticationError,

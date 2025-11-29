@@ -1,7 +1,7 @@
-from lib.RaceIdClient import Result
-from lib.RaceIdClientWrapper import RaceIdClientWrapper
-from lib.ConfigLoader import ConfigLoader
-from src.models import ActivityModel
+from activity_manager.clients.RaceIdClient import Result
+from activity_manager.clients.RaceIdClientWrapper import RaceIdClientWrapper
+from activity_manager.config.ConfigLoader import ConfigLoader
+from activity_manager.models import ActivityModel
 
 
 class RaceIdRepository:

@@ -5,8 +5,8 @@ from typing import TypeAlias
 from textual.app import ComposeResult
 from textual.widgets import DataTable
 
-from lib.RaceIdRepository import RaceIdRepository
-from src.models import ActivityModel
+from activity_manager.repositories.RaceIdRepository import RaceIdRepository
+from activity_manager.models import ActivityModel
 
 ActivityCache: TypeAlias = dict[str, ActivityModel]
 

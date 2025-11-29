@@ -3,14 +3,23 @@ from textual.app import ComposeResult
 from textual.screen import Screen
 from textual.containers import Center, Middle
 from textual.widgets import Footer, Header, LoadingIndicator
-from lib.GarminRepository import GarminRepository
-from ui.ActivityFilter import ActivityFilter
-from ui.ActivityTable import ActivityTable
-from ui.DateInput import DateInput
+from textual.reactive import reactive
+from activity_manager.repositories.GarminRepository import GarminRepository
+from activity_manager.ui.widgets.ActivityFilter import ActivityFilter
+from activity_manager.ui.widgets.ActivityTable import ActivityTable
+from activity_manager.ui.widgets.DateInput import DateInput
 from debouncer import debounce
 
 
 class MainScreen(Screen):
+    # Reactive variable for loading state
+    is_loading = reactive(False)
+
+    def __init__(self):
+        super().__init__()
+        self.start_date = None
+        self.end_date = None
+
     CSS = """
         Screen { 
             layout: vertical;
@@ -64,6 +73,14 @@ class MainScreen(Screen):
         )
         yield Footer()
 
+    def on_mount(self) -> None:
+        """Called when screen is mounted - load initial activities"""
+        # Get the start date from the DateInput widget
+        start_date_input = self.query_one("#start_date", DateInput)
+        if start_date_input.value:
+            self.start_date = start_date_input.value
+            self.update_activities()
+
     @debounce(wait=0.3)
     @on(DateInput.Changed, "#start_date")
     def update_start_date(self, event: DateInput.Changed):
@@ -78,17 +95,18 @@ class MainScreen(Screen):
             self.end_date = event.value
             self.update_activities()
 
-    def _show_loading_indicator(self, display: bool):
+    def watch_is_loading(self, is_loading: bool) -> None:
+        """Automatically called when is_loading changes"""
         indicator = self.query_one("#loading_indicator")
-        indicator.display = display
+        indicator.display = is_loading
 
     @work(exclusive=True, thread=True)
     async def update_activities(self):
-        self.call_from_thread(self._show_loading_indicator, True)
+        self.is_loading = True
         try:
             activities = self.REPOSITORY.get_activities(self.start_date)
             self.query_one(ActivityTable).set_data(activities)
         except Exception as e:
             self.app.notify(f"Error fetching activities: {e}", severity="error")
         finally:
-            self.call_from_thread(self._show_loading_indicator, False)
+            self.is_loading = False

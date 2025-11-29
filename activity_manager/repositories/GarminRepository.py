@@ -1,5 +1,5 @@
-from src.models import ActivityModel
-from lib.GarminClientWrapper import GarminClientWrapper
+from activity_manager.models import ActivityModel
+from activity_manager.clients.GarminClientWrapper import GarminClientWrapper
 
 
 class GarminRepository:

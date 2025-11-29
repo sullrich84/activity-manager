@@ -1,5 +1,5 @@
 from textual.message import Message
-from src.models import ActivityModel
+from activity_manager.models import ActivityModel
 
 
 class DataMessage(Message):

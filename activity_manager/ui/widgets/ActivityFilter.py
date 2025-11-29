@@ -2,7 +2,7 @@ from datetime import date, timedelta
 from textual.app import ComposeResult
 from textual.containers import HorizontalGroup
 from textual.widgets import Label
-from ui.DateInput import DateInput
+from activity_manager.ui.widgets.DateInput import DateInput
 
 
 class ActivityFilter(HorizontalGroup):

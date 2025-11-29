@@ -1,5 +1,5 @@
-from lib.ConfigLoader import ConfigLoader, Credentials
-from lib.RaceIdClient import RaceIdClient
+from activity_manager.config.ConfigLoader import ConfigLoader, Credentials
+from activity_manager.clients.RaceIdClient import RaceIdClient
 
 
 class RaceIdClientWrapper:

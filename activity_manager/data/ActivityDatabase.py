@@ -2,7 +2,7 @@ import pickle
 from typing import List, Dict
 from pathlib import Path
 
-from src.models import ActivityModel
+from activity_manager.models import ActivityModel
 
 
 class ActivityDatabase:

@@ -1,10 +1,10 @@
 from textual.app import App
-from src.ui.screens import ActivityScreen
+from activity_manager.ui import MainScreen
 
 
 class ActivityManager(App):
     SCREENS = {
-        "main": ActivityScreen,
+        "main": MainScreen,
     }
 
     BINDINGS = [
