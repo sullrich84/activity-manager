@@ -36,7 +36,7 @@ class ActivityTable(DataTable):
         ("s", "sync_with_raceid", "sync with RaceID"),
     ]
 
-    REPOSITORY = RaceIdRepository
+    REPOSITORY = RaceIdRepository()
 
     activity_cache: ActivityCache = {}
     selected_row_key = None
@@ -64,8 +64,9 @@ class ActivityTable(DataTable):
     def action_sync_with_raceid(self) -> None:
         activity_id = self.coordinate_to_cell_key(self.cursor_coordinate).row_key.value
         activity = self.activity_cache[activity_id]
-        self.REPOSITORY.set_result("995655", activity)
-        self.notify(f"Synced {activity.id}")
+        if activity:
+            self.REPOSITORY.set_result("995655", activity)
+            self.notify(f"Synced {activity.id}")
 
     # --- Utility Methods ---
 

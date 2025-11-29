@@ -9,7 +9,7 @@ class RaceIdRepository:
     def set_result(self, id: str, activity: ActivityModel):
         result = Result(
             activity_link=activity.url,
-            distance_logged=activity.distance_m,
+            distance_logged=max(1, activity.distance_m),
             distance_logged_at=activity.start_time[:10],
             time_result=activity.formatted_duration,
         )
