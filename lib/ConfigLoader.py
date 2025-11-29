@@ -10,9 +10,6 @@ class Credentials(TypedDict):
 
 
 class ConfigLoader:
-    garmin: Credentials
-    raceid: Credentials
-
     def __init__(self):
         """
         Loads properties from the config file.
@@ -23,21 +20,23 @@ class ConfigLoader:
 
         try:
             with open(config_path, "r") as file:
-                config = yaml.safe_load(file)
-                self.garmin: Credentials = {
-                    "username": config["garmin"]["username"],
-                    "password": config["garmin"]["password"],
-                }
-                self.raceid: Credentials = {
-                    "username": config["raceid"]["username"],
-                    "password": config["raceid"]["password"],
-                }
+                self._config = yaml.safe_load(file)
         except FileNotFoundError:
             print(f"Config file {config_path} not found!")
             sys.exit(1)
         except yaml.YAMLError as err:
             print(f"Could not parse {config_path}: {err}")
             sys.exit(1)
+
+    def get_credentials(self, service: str) -> Credentials:
+        """
+        Returns credentials for a given service.
+        """
+        try:
+            return {
+                "username": self._config[service]["username"],
+                "password": self._config[service]["password"],
+            }
         except KeyError as err:
-            print(f"Missing required field in config: {err}")
+            print(f"Missing required field in config for service '{service}': {err}")
             sys.exit(1)

@@ -7,6 +7,6 @@ class RaceIdClientWrapper:
 
     def auth_raceid(self) -> RaceIdClient:
         client = RaceIdClient()
-        credentials: Credentials = self.CONFIG.raceid
-        client.auth(credentials.username, credentials.password)
+        credentials: Credentials = self.CONFIG.get_credentials("raceid")
+        client.auth(credentials["username"], credentials["password"])
         return client
