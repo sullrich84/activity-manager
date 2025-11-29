@@ -84,7 +84,7 @@ if __name__ == "__main__":
         time_result="01:07:17",
     )
 
-    # client.log_result(id="995659", result=result)
+    client.log_result(id="995659", result=result)
     for result in client.get_results("995659"):
         print(
             f"{result.id} {result.result_id} {result.time_result} {result.activity_link}"

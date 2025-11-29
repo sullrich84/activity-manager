@@ -1,16 +1,17 @@
 import sys
 import yaml
 from pathlib import Path
-from dataclasses import dataclass
-from src.models import Credentials
+from typing import TypedDict
 
 
-@dataclass
-class ConfigLoader:
+class Credentials(TypedDict):
     username: str
     password: str
 
+
+class ConfigLoader:
     garmin: Credentials
+    raceid: Credentials
 
     def __init__(self):
         """
@@ -23,9 +24,14 @@ class ConfigLoader:
         try:
             with open(config_path, "r") as file:
                 config = yaml.safe_load(file)
-                self.garmin = Credentials(
-                    config["garmin"]["username"], config["garmin"]["password"]
-                )
+                self.garmin: Credentials = {
+                    "username": config["garmin"]["username"],
+                    "password": config["garmin"]["password"],
+                }
+                self.raceid: Credentials = {
+                    "username": config["raceid"]["username"],
+                    "password": config["raceid"]["password"],
+                }
         except FileNotFoundError:
             print(f"Config file {config_path} not found!")
             sys.exit(1)

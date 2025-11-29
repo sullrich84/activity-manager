@@ -3,7 +3,7 @@ from lib.RaceIdClientWrapper import RaceIdClientWrapper
 from src.models import ActivityModel
 
 
-class RaceIdReposiotry:
+class RaceIdRepository:
     CLIENT = RaceIdClientWrapper().auth_raceid()
 
     def set_result(self, id: str, activity: ActivityModel):

@@ -5,7 +5,7 @@ from typing import TypeAlias
 from textual.app import ComposeResult
 from textual.widgets import DataTable
 
-from lib.RaceIdRepository import RaceIdReposiotry
+from lib.RaceIdRepository import RaceIdRepository
 from src.models import ActivityModel
 
 ActivityCache: TypeAlias = dict[str, ActivityModel]
@@ -36,7 +36,7 @@ class ActivityTable(DataTable):
         ("s", "sync_with_raceid", "sync with RaceID"),
     ]
 
-    # REPOSITORY = RaceIdReposiotry()
+    REPOSITORY = RaceIdRepository
 
     activity_cache: ActivityCache = {}
     selected_row_key = None
@@ -64,9 +64,8 @@ class ActivityTable(DataTable):
     def action_sync_with_raceid(self) -> None:
         activity_id = self.coordinate_to_cell_key(self.cursor_coordinate).row_key.value
         activity = self.activity_cache[activity_id]
-
-        # self.REPOSITORY.set_result()
-        self.notify(f"Sync {activity.id}")
+        self.REPOSITORY.set_result("995655", activity)
+        self.notify(f"Synced {activity.id}")
 
     # --- Utility Methods ---
 
