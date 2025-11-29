@@ -1,11 +1,14 @@
 from webbrowser import open
 from os import get_terminal_size
+from typing import TypeAlias
 
 from textual.app import ComposeResult
 from textual.widgets import DataTable
 
-from src.message import DataMessage, BusyMessage
+from lib.RaceIdRepository import RaceIdReposiotry
 from src.models import ActivityModel
+
+ActivityCache: TypeAlias = dict[str, ActivityModel]
 
 
 class ActivityTable(DataTable):
@@ -33,7 +36,9 @@ class ActivityTable(DataTable):
         ("s", "sync_with_raceid", "sync with RaceID"),
     ]
 
-    activity_cache = {}
+    # REPOSITORY = RaceIdReposiotry()
+
+    activity_cache: ActivityCache = {}
     selected_row_key = None
 
     def compose(self) -> ComposeResult:
@@ -55,6 +60,13 @@ class ActivityTable(DataTable):
     def action_open_in_web(self) -> None:
         activity_id = self.coordinate_to_cell_key(self.cursor_coordinate).row_key.value
         open(self.activity_cache[activity_id].url)
+
+    def action_sync_with_raceid(self) -> None:
+        activity_id = self.coordinate_to_cell_key(self.cursor_coordinate).row_key.value
+        activity = self.activity_cache[activity_id]
+
+        # self.REPOSITORY.set_result()
+        self.notify(f"Sync {activity.id}")
 
     # --- Utility Methods ---
 
