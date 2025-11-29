@@ -1,6 +1,10 @@
 import requests
+import json
+from pathlib import Path
 from dataclasses import dataclass
 from typing import Literal, Optional, Any
+
+from activity_manager.config import ConfigLoader
 
 
 @dataclass
@@ -15,16 +19,48 @@ class Result:
 
 class RaceIdClient:
     BASE_API_URL = "https://api.raceid.com/api/v1/web"
+    TOKEN_STORE = Path.home() / ".raceid" / "token.jwt"
+
+    config = ConfigLoader()
     bearer_token: Optional[str] = None
 
-    def auth(self, username: str, password: str):
-        json = {"email": username, "password": password}
-        response = self._make_request("POST", "/user/login", json=json)
+    def __init__(self):
+        self.load_token()
+        if not self.bearer_token:
+            self.auth()
+
+        # TODO: Handle token expired
+        for racer_id in self.config.get_raceid_series():
+            print(racer_id)
+
+    def auth(self):
+        credentials = self.config.get_credentials("raceid")
+        auth_json = {
+            "email": credentials["username"],
+            "password": credentials["password"],
+        }
+        response = self.request("POST", "/user/login", json=auth_json, with_auth=False)
+
+        self.save_token(response)
         self.bearer_token = response.get("data", {}).get("token")
+
+    def load_token(self) -> None:
+        try:
+            if self.TOKEN_STORE.exists():
+                with open(self.TOKEN_STORE, "r") as token_file:
+                    auth_response = json.load(token_file)
+                    self.bearer_token = auth_response.get("data", {}).get("token")
+        except (FileNotFoundError, json.JSONDecodeError):
+            pass
+
+    def save_token(self, auth_response: dict):
+        self.TOKEN_STORE.parent.mkdir(parents=True, exist_ok=True)
+        with open(self.TOKEN_STORE, "w") as f:
+            json.dump(auth_response, f, indent=2)
 
     def get_results(self, id: str, page: int = 1, limit: int = 100) -> list[Result]:
         params = {"page": page, "limit": limit}
-        response = self._make_request("GET", f"/racers/{id}/segments", params=params)
+        response = self.request("GET", f"/racers/{id}/segments", params=params)
 
         results = []
         for res in response.get("data", {}):
@@ -48,9 +84,9 @@ class RaceIdClient:
         }
 
         endpoint = f"/racers/{id}/segments"
-        return self._make_request("POST", endpoint=endpoint, json=json)
+        return self.request("POST", endpoint=endpoint, json=json)
 
-    def _make_request(
+    def request(
         self,
         method: Literal["GET", "POST"],
         endpoint: str,
@@ -71,21 +107,3 @@ class RaceIdClient:
 
         response.raise_for_status()
         return response.json()
-
-
-if __name__ == "__main__":
-    client = RaceIdClient()
-    client.auth("sebastian.ullrich@deepsource.de", "hqg.ufg@vnd8EUZ2jxt")
-
-    result = Result(
-        activity_link="https://connect.garmin.com/modern/activity/20870918926",
-        distance_logged=33740,
-        distance_logged_at="2025-11-02",
-        time_result="01:07:17",
-    )
-
-    client.log_result(id="995659", result=result)
-    for result in client.get_results("995659"):
-        print(
-            f"{result.id} {result.result_id} {result.time_result} {result.activity_link}"
-        )

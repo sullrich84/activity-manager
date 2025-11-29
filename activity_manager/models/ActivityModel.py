@@ -49,7 +49,11 @@ class ActivityModel:
 
     @property
     def visibility_icon(self) -> str:
-        return "[green] [/green]" if self.is_public else f"[red] [/red]"
+        return f"[green] [/green]" if self.is_public else f"[red] [/red]"
+
+    @property
+    def sync_icon(self) -> str:
+        return f"[green]󰪩 [/green]" if False else f"[red]󰳿 [/red]"
 
     @property
     def activity_icon(self) -> str:

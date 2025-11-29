@@ -41,6 +41,17 @@ class ConfigLoader:
             print(f"Missing required field in config for service '{service}': {err}")
             sys.exit(1)
 
+    def get_raceid_series(self) -> list[str]:
+        """
+        Returns all configure RaceID series.
+        """
+        try:
+            return self._config["raceid"]["series"]
+        except KeyError:
+            print(f"No RaceID series configured")
+            print("Please add it to your config file under raceid.series")
+            sys.exit(1)
+
     def get_raceid_series_id(self, year_month: str) -> str:
         """
         Returns the RaceID series ID for a given year-month.

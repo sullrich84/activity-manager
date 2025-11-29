@@ -23,7 +23,8 @@ class ActivityTable(DataTable):
     COLS = {
         "Date": 19,
         "ID": 11,
-        " ": 2,
+        " ": 1,
+        "󰆼 ": 1,
         "Name": None,
         "Distance": 8,
         "Duration": 8,
@@ -82,6 +83,7 @@ class ActivityTable(DataTable):
                 activity.start_time,
                 activity.id,
                 activity.visibility_icon,
+                activity.sync_icon,
                 activity.name,
                 activity.formatted_distance,
                 activity.formatted_duration,

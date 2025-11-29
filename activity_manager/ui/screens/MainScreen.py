@@ -12,7 +12,6 @@ from debouncer import debounce
 
 
 class MainScreen(Screen):
-    # Reactive variable for loading state
     is_loading = reactive(False)
 
     def __init__(self):
@@ -61,7 +60,7 @@ class MainScreen(Screen):
         }
     """
 
-    REPOSITORY = GarminRepository()
+    garmin_repository = GarminRepository()
 
     def compose(self) -> ComposeResult:
         self.title = "Garmin Connect Manager"
@@ -102,9 +101,12 @@ class MainScreen(Screen):
 
     @work(exclusive=True, thread=True)
     async def update_activities(self):
+        if not self.start_date:
+            return
+
         self.is_loading = True
         try:
-            activities = self.REPOSITORY.get_activities(self.start_date)
+            activities = self.garmin_repository.get_activities(self.start_date)
             self.query_one(ActivityTable).set_data(activities)
         except Exception as e:
             self.app.notify(f"Error fetching activities: {e}", severity="error")
