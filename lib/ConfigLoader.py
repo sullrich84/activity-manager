@@ -2,6 +2,7 @@ import sys
 import yaml
 from pathlib import Path
 from dataclasses import dataclass
+from src.models import Credentials
 
 
 @dataclass
@@ -9,18 +10,22 @@ class ConfigLoader:
     username: str
     password: str
 
+    garmin: Credentials
+
     def __init__(self):
         """
         Loads properties from the config file.
         """
 
+        # Loads /Users/sullrich/.acm/config.yaml
         config_path = Path.home() / ".acm" / "config.yaml"
 
         try:
             with open(config_path, "r") as file:
                 config = yaml.safe_load(file)
-                self.username = config["garmin"]["username"]
-                self.password = config["garmin"]["password"]
+                self.garmin = Credentials(
+                    config["garmin"]["username"], config["garmin"]["password"]
+                )
         except FileNotFoundError:
             print(f"Config file {config_path} not found!")
             sys.exit(1)

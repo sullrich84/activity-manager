@@ -1,12 +1,12 @@
 from lib.RaceIdClient import Result
 from lib.RaceIdClientWrapper import RaceIdClientWrapper
-from model.ActivityItem import ActivityItem
+from src.models import ActivityModel
 
 
 class RaceIdReposiotry:
     CLIENT = RaceIdClientWrapper().auth_raceid()
 
-    def set_result(self, id: str, activity: ActivityItem):
+    def set_result(self, id: str, activity: ActivityModel):
         result = Result(
             activity_link=activity.url,
             distance_logged=activity.distance_m,

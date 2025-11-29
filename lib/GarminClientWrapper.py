@@ -15,7 +15,7 @@ class GarminClientWrapper:
             client = Garmin()
             client.garth.load(self.TOKEN_STORE)
         except (FileNotFoundError, GarminConnectConnectionError):
-            client = Garmin(self.CONFIG.username, self.CONFIG.password)
+            client = Garmin(self.CONFIG.garmin.username, self.CONFIG.garmin.password)
             client.login()
             client.garth.dump(self.TOKEN_STORE)
         except GarminConnectAuthenticationError:
