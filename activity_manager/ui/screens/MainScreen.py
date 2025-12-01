@@ -5,6 +5,7 @@ from textual.containers import Center, Middle
 from textual.widgets import Footer, Header, LoadingIndicator
 from textual.reactive import reactive
 from activity_manager.repositories.GarminRepository import GarminRepository
+from activity_manager.data.ActivityStore import ActivityStore
 from activity_manager.ui.widgets.ActivityFilter import ActivityFilter
 from activity_manager.ui.widgets.ActivityTable import ActivityTable
 from activity_manager.ui.widgets.DateInput import DateInput
@@ -18,6 +19,8 @@ class MainScreen(Screen):
         super().__init__()
         self.start_date = None
         self.end_date = None
+        self.store = ActivityStore()
+        self.garmin_repository = GarminRepository()
 
     CSS = """
         Screen { 
@@ -60,8 +63,6 @@ class MainScreen(Screen):
         }
     """
 
-    garmin_repository = GarminRepository()
-
     def compose(self) -> ComposeResult:
         self.title = "Garmin Connect Manager"
         yield Header()
@@ -73,12 +74,22 @@ class MainScreen(Screen):
         yield Footer()
 
     def on_mount(self) -> None:
-        """Called when screen is mounted - load initial activities"""
-        # Get the start date from the DateInput widget
+        """
+        Called when screen is mounted - load initial activities
+        """
+        self.store.subscribe(self.on_store_update)
+        self.on_store_update()
+
         start_date_input = self.query_one("#start_date", DateInput)
         if start_date_input.value:
             self.start_date = start_date_input.value
             self.update_activities()
+
+    def on_unmount(self) -> None:
+        """
+        Called when screen is unmounted - cleanup
+        """
+        self.store.unsubscribe(self.on_store_update)
 
     @debounce(wait=0.3)
     @on(DateInput.Changed, "#start_date")
@@ -95,9 +106,21 @@ class MainScreen(Screen):
             self.update_activities()
 
     def watch_is_loading(self, is_loading: bool) -> None:
-        """Automatically called when is_loading changes"""
+        """
+        Automatically called when is_loading changes
+        """
         indicator = self.query_one("#loading_indicator")
         indicator.display = is_loading
+
+    def on_store_update(self):
+        """
+        Called whenever the store is updated
+        """
+        try:
+            activities = self.store.get_all_activities()
+            self.query_one(ActivityTable).set_data(activities)
+        except Exception as e:
+            self.app.notify(f"Error updating from store: {e}", severity="error")
 
     @work(exclusive=True, thread=True)
     async def update_activities(self):
@@ -106,8 +129,8 @@ class MainScreen(Screen):
 
         self.is_loading = True
         try:
-            activities = self.garmin_repository.get_activities(self.start_date)
-            self.query_one(ActivityTable).set_data(activities)
+            # Fetch from Garmin - automatically updates store and triggers UI update
+            self.garmin_repository.get_activities(self.start_date)
         except Exception as e:
             self.app.notify(f"Error fetching activities: {e}", severity="error")
         finally:

@@ -24,7 +24,7 @@ class ActivityTable(DataTable):
         "Date": 19,
         "ID": 11,
         " ": 1,
-        "󰆼 ": 1,
+        "󰓦 ": 1,
         "Name": None,
         "Distance": 8,
         "Duration": 8,
@@ -37,10 +37,17 @@ class ActivityTable(DataTable):
         ("s", "sync_with_raceid", "sync with RaceID"),
     ]
 
-    REPOSITORY = RaceIdRepository()
-
     activity_cache: ActivityCache = {}
     selected_row_key = None
+    repository = None
+
+    def __init__(self):
+        super().__init__()
+
+    def on_mount(self) -> None:
+        """Initialize repository after mount to ensure proper timing"""
+        self.repository = RaceIdRepository()
+        return super().on_mount()
 
     def compose(self) -> ComposeResult:
         for name, width in self.COLS.items():
@@ -67,7 +74,8 @@ class ActivityTable(DataTable):
         activity = self.activity_cache[activity_id]
         if activity:
             try:
-                self.REPOSITORY.set_result(activity)
+                # Repository will update store, which triggers UI update
+                self.repository.set_result(activity)
                 self.notify(f"Synced `{activity.name}` with RaceID")
             except:
                 self.notify(f"Failed to sync `{activity.name}` with RaceID")

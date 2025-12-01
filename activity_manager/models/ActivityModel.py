@@ -38,6 +38,7 @@ class ActivityModel:
     start_time: str
     distance_m: int
     duration_sec: int
+    synced: bool = False
 
     @property
     def url(self) -> str:
@@ -53,7 +54,7 @@ class ActivityModel:
 
     @property
     def sync_icon(self) -> str:
-        return f"[green]󰪩 [/green]" if False else f"[red]󰳿 [/red]"
+        return f"[green] [/green]" if self.synced else f"[red] [/red]"
 
     @property
     def activity_icon(self) -> str:

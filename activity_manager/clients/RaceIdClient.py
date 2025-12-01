@@ -34,9 +34,6 @@ class RaceIdClient:
         for racer_id in self.config.get_raceid_series():
             self.cache[racer_id] = self.get_results(racer_id)
 
-        print(self.cache)
-        exit(1)
-
     def auth(self):
         credentials = self.config.get_credentials("raceid")
         auth_json = {
