@@ -13,10 +13,11 @@ class RaceIdRepository:
         self._sync_initial_state()
 
     def _sync_initial_state(self):
-        """Check all activities in store against RaceID cache and update sync state"""
-        # Collect all synced activity URLs from RaceID cache
+        """
+        Check all activities in store against RaceID cache and update sync state
+        """
         synced_urls = set()
-        for racer_id, results in self.client.cache.items():
+        for results in self.client.cache.values():
             for result in results:
                 if result.activity_link:
                     synced_urls.add(result.activity_link)
@@ -35,7 +36,11 @@ class RaceIdRepository:
 
     def set_result(self, activity: ActivityModel):
         year_month = activity.start_time[:7]  # Gets 'YYYY-MM'
-        series_id = self.config.get_raceid_series_id(year_month)
+
+        try:
+            series_id = self.config.get_raceid_series_id(year_month)
+        except KeyError as e:
+            raise ValueError(f"Cannot sync activity from {year_month}: {e}")
 
         result = Result(
             activity_link=activity.url,

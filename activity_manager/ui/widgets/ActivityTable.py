@@ -77,8 +77,8 @@ class ActivityTable(DataTable):
                 # Repository will update store, which triggers UI update
                 self.repository.set_result(activity)
                 self.notify(f"Synced `{activity.name}` with RaceID")
-            except:
-                self.notify(f"Failed to sync `{activity.name}` with RaceID")
+            except Exception as e:
+                self.notify(f"Failed to sync `{activity.name}` with RaceID: {str(e)}", severity="error")
 
     # --- Utility Methods ---
 

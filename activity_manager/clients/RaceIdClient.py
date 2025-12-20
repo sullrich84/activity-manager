@@ -101,11 +101,14 @@ class RaceIdClient:
         if with_auth:
             headers["x-authorization"] = f"Bearer {self.bearer_token}"
 
-        match (method):
-            case "GET":
-                response = requests.get(url, headers=headers, params=params)
-            case "POST":
-                response = requests.post(url, headers=headers, json=json)
+        try:
+            match (method):
+                case "GET":
+                    response = requests.get(url, headers=headers, params=params)
+                case "POST":
+                    response = requests.post(url, headers=headers, json=json)
 
-        response.raise_for_status()
-        return response.json()
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            raise ValueError(f"RaceID API request failed: {e}")
