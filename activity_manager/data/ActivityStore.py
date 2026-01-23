@@ -1,4 +1,5 @@
-from typing import Callable, List, Dict
+from typing import Callable, List, Dict, Optional
+from datetime import datetime
 from activity_manager.models import ActivityModel
 from activity_manager.data.ActivityDatabase import ActivityDatabase
 
@@ -97,9 +98,23 @@ class ActivityStore:
         """
         return self.activities.get(activity_id)
 
-    def get_all_activities(self) -> List[ActivityModel]:
+    def get_all_activities(self, start_date: Optional[str] = None, end_date: Optional[str] = None) -> List[ActivityModel]:
         """
-        Get all activities sorted by start_time
+        Get all activities sorted by start_time, optionally filtered by date range
+
+        Args:
+            start_date: Optional start date in format 'YYYY-MM-DD'
+            end_date: Optional end date in format 'YYYY-MM-DD'
         """
         activities = list(self.activities.values())
+
+        # Filter by date range if provided
+        if start_date:
+            activities = [a for a in activities if a.start_time >= start_date]
+        if end_date:
+            # Include the entire end date by comparing with the next day
+            end_date_inclusive = datetime.strptime(end_date, '%Y-%m-%d')
+            end_date_str = end_date_inclusive.replace(hour=23, minute=59, second=59).strftime('%Y-%m-%d %H:%M:%S')
+            activities = [a for a in activities if a.start_time <= end_date_str]
+
         return sorted(activities, key=lambda a: a.start_time, reverse=True)

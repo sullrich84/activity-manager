@@ -96,14 +96,16 @@ class MainScreen(Screen):
     def update_start_date(self, event: DateInput.Changed):
         if event.validation_result and event.validation_result.is_valid and event.value:
             self.start_date = event.value
-            self.update_activities()
+            self.on_store_update()  # Update display from cache first
+            self.update_activities()  # Then fetch from API
 
     @debounce(wait=0.3)
     @on(DateInput.Changed, "#end_date")
     def update_end_date(self, event: DateInput.Changed):
         if event.validation_result and event.validation_result.is_valid and event.value:
             self.end_date = event.value
-            self.update_activities()
+            self.on_store_update()  # Update display from cache first
+            self.update_activities()  # Then fetch from API
 
     def watch_is_loading(self, is_loading: bool) -> None:
         """
@@ -117,7 +119,10 @@ class MainScreen(Screen):
         Called whenever the store is updated
         """
         try:
-            activities = self.store.get_all_activities()
+            activities = self.store.get_all_activities(
+                start_date=self.start_date,
+                end_date=self.end_date
+            )
             self.query_one(ActivityTable).set_data(activities)
         except Exception as e:
             self.app.notify(f"Error updating from store: {e}", severity="error")
