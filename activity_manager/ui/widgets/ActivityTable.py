@@ -83,6 +83,9 @@ class ActivityTable(DataTable):
     # --- Utility Methods ---
 
     def set_data(self, activities: list[ActivityModel]) -> None:
+        # Save current cursor position
+        current_row_index = self.cursor_row if self.row_count > 0 else 0
+
         self.activity_cache.clear()
         self.clear()
         for activity in activities:
@@ -97,6 +100,13 @@ class ActivityTable(DataTable):
                 activity.formatted_duration,
                 key=activity.id,
             )
+
+        # Restore cursor position
+        if self.row_count > 0:
+            # Ensure the cursor index is within bounds
+            current_row_index = min(current_row_index, self.row_count - 1)
+            self.move_cursor(row=current_row_index)
+
         self.refresh()
 
     def get_name_column_width(self) -> None:
