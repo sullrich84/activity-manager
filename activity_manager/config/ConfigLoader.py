@@ -60,3 +60,12 @@ class ConfigLoader:
                 f"No RaceID series configured for month '{year_month}'. "
                 "Please add it to your config file under raceid.series"
             )
+
+    def get_raceid_jwt_token(self) -> str | None:
+        """
+        Returns the JWT token for RaceID authentication.
+        """
+        try:
+            return self._config["raceid"]["token"]
+        except KeyError:
+            return None

@@ -26,38 +26,16 @@ class RaceIdClient:
     cache = {}
 
     def __init__(self):
-        self.load_token()
+        # Try to load JWT token from config first
+        self.bearer_token = self.config.get_raceid_jwt_token()
 
         if not self.bearer_token:
-            self.auth()  # TODO: handle token expire
+            raise ValueError(
+                "No JWT token found. Please add 'token' field to raceid section in config.yaml"
+            )
 
         for racer_id in self.config.get_raceid_series():
             self.cache[racer_id] = self.get_results(racer_id)
-
-    def auth(self):
-        credentials = self.config.get_credentials("raceid")
-        auth_json = {
-            "email": credentials["username"],
-            "password": credentials["password"],
-        }
-        response = self.request("POST", "/user/login", json=auth_json, with_auth=False)
-
-        self.save_token(response)
-        self.bearer_token = response.get("data", {}).get("token")
-
-    def load_token(self) -> None:
-        try:
-            if self.TOKEN_STORE.exists():
-                with open(self.TOKEN_STORE, "r") as token_file:
-                    auth_response = json.load(token_file)
-                    self.bearer_token = auth_response.get("data", {}).get("token")
-        except (FileNotFoundError, json.JSONDecodeError):
-            pass
-
-    def save_token(self, auth_response: dict):
-        self.TOKEN_STORE.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.TOKEN_STORE, "w") as f:
-            json.dump(auth_response, f, indent=2)
 
     def get_results(self, id: str, page: int = 1, limit: int = 100) -> list[Result]:
         params = {"page": page, "limit": limit}
@@ -99,7 +77,7 @@ class RaceIdClient:
         headers = {"accept": "application/json", "content-type": "application/json"}
 
         if with_auth:
-            headers["x-authorization"] = f"Bearer {self.bearer_token}"
+            headers["Pace-Authorization"] = f"Bearer {self.bearer_token}"
 
         try:
             match (method):
